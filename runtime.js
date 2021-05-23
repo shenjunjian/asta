@@ -8,6 +8,9 @@ import { AstaBase } from "./astaBase.js"
 */
 export function asta(coreFn, options) {
     let tag = options.tag
+    let viewBody = generate(parse(options.template), null)
+    console.log(viewBody)
+    let $view= new Function('a', 'instance', 'locals', viewBody)
     // 立即定义一个类 
     class Asta extends AstaBase {
         static get tag() { return tag }
@@ -15,17 +18,16 @@ export function asta(coreFn, options) {
         constructor() {
             super()
             this.name = tag
-            // 定义时即编译为指令 
-            let viewBody = generate(parse(options.view), null)
-            this.view = new Function('a', 'instance', 'locals', viewBody)(a, this, {})
-            console.log(viewBody)
-             let that = this;
             this.core = coreFn()
+            this.core.props=this.props;
+            // 定义时即编译为指令 
+            this.view = $view(a, this.core, {});
+             let that = this;
             for (let key in coreFn()) {
                 let fn = this.core[key]
                 if (typeof fn === 'function') {
                     this.core[key] = function (...args) {
-                        fn.apply(that, args) //? 测试用call or apply 
+                        fn.apply(that.core, args) //? 测试用call or apply 
                         that.update();
                     }
                 }

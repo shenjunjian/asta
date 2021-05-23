@@ -15,7 +15,7 @@ declare var asta:(coreFn,options)=>CustomComponentClass;
 	+ tag: 组件将被定义的标签名
 	+ props: 组件响应的属性。 props属性变化时，自动更新视图
 	+ emits: 和vue一样， 只是指示性的作用。 表示该组件可能产生的事件。 以后考虑增加配置，约定事件的冒泡及compose属性
-	+ view:  相当于vue的template 。 定义组件模板。以后考虑如何缓存它
+	+ template:  相当于vue的template 。 定义组件模板。以后考虑如何缓存它
 	        目前绑定属性要写 {core.count} {props.step} @click="core.add" 。以后升级模板写法，尽量去掉core的前缀！
 			而且现在访问  {name} {queued} 可能还把内部状态值暴露出来了。 也是不友好的
 			是否改名为template?
@@ -34,7 +34,7 @@ asta(() => ({
     tag: 'my-counter',
     props: ['btn-text', 'step'],
     emits:["create","update","destory"],  // 和vue一样， 只是指示性的作用。
-    view: `<div>step={props.step},count={ core.count }</div> 
+    template: `<div>step={props.step},count={ core.count }</div> 
           <button @click="core.add"> { props['btn-text']}</button>`,
 	style:`
 		div{
