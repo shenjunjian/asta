@@ -17,30 +17,70 @@ import { asta } from './runtime.js'
 6、类似svelte一样的标记脏位，最小化更新
 7、。。。无穷多想加入进来 ，想测试能不能行通！ 
 */
-asta(() => ({
-  count: 0,
-  add: function () {
-    this.core.count += +this.props.step
-  },
-}),
-  {
-    tag: 'my-counter',
-    props: ['btn-text', 'step'],
-    emits: ["create", "update", "destory"],  // 和vue一样， 只是指示性的作用。
-    view: `<div part="info" >step={props.step},count={ core.count } --内部变量也暴露--  {name}</div> 
-          <button part="btn" @click="core.add"> { props['btn-text']}</button>`,
-    style: `
+asta(
+	() => ({
+		count: 0,
+		add: function () {
+			this.count += +this.props.step
+			// this.emit("countChange",this.count)
+		},
+	}),
+	{
+		tag: 'my-counter',
+		props: ['btn-text', 'step'],
+		emits: ['create', 'update', 'destory'], // 和vue一样， 只是指示性的作用。
+		template: `<div part="info" >step={props.step},count={ count} </div> 
+          <button part="btn" @click="add"> { props['btn-text']}</button>`,
+		style: `
           div{font-size:20px;}
-        `
-  })
+        `,
+	}
+)
 let el = document.createElement('my-counter')
 el.setAttribute('btn-text', '增加计数5')
 el.setAttribute('step', 5)
 document.body.append(el)
-el.addEventListener("update", function (ev) {
-  console.log("组件更新", ev)
+el.addEventListener('update', function (ev) {
+	console.log('组件更新', ev)
 })
 // 由于这个原因，事件是否冒泡需要仔细斟酌！
-document.body.addEventListener("update", function (ev) {
-  console.log("还冒泡到根节点，组件更新", ev)
+document.body.addEventListener('update', function (ev) {
+	console.log('还冒泡到根节点，组件更新', ev)
 })
+
+let a0, a1, a2, a3, a4, a5, a6, a7
+return [
+	function ($) {
+		a0 = $
+		a1 = a.ce('div')
+		a.sa(a1, 'part', 'info')
+		a2 = a.ctn('')
+		a.stc(a2, 'step=')
+		a.ac(a2, a1)
+		a3 = a.ctn('')
+		a.ac(a3, a1)
+		a4 = a.ctn('')
+		a.stc(a4, ',count=')
+		a.ac(a4, a1)
+		a5 = a.ctn('')
+		a.ac(a5, a1)
+		a.ac(a1, a0)
+		a6 = a.ce('button')
+		a.sa(a6, 'part', 'btn')
+		a.ael(a6, 'click', function ($event) {
+			instance.add($event)
+		})
+		a7 = a.ctn('')
+		a.ac(a7, a6)
+		a.ac(a6, a0)
+	},
+	function () {
+		a.stc(a3, instance.props.step)
+		a.stc(a5, instance.count)
+		a.stc(a7, instance.props['btn-text'])
+	},
+	function () {
+		a.rc(a1, a0)
+		a.rc(a6, a0)
+	},
+]
